@@ -76,6 +76,21 @@ const ICONS = {
     s += P(d, ACCENT, 2);
     return s;
   },
+  // Devre — pil + ampul halkası
+  devre() {
+    let s = P("M40,68 L40,28 L160,28 L160,68 Z", INK, 1.4);
+    // ampul (üstte, haleli)
+    s += `<circle cx="100" cy="28" r="18" fill="${ACCENT}22"/>`;
+    s += P("M100,28 m-11,0 a11,11 0 1,0 22,0 a11,11 0 1,0 -22,0", ACCENT, 1.6);
+    s += P("M94,32 L97,23 L100,32 L103,23 L106,32", ACCENT, 1.3);
+    // pil (altta)
+    s += P("M82,68 L118,68", "none");
+    s += `<rect x="86" y="60" width="28" height="16" fill="none" stroke="${INK}" stroke-width="1.4"/>`;
+    s += P("M97,63 L97,73", INK, 1.3) + P("M105,62 L105,74", INK, 2.4);
+    // akım noktaları
+    for (const t of [0.3, 0.7]) s += `<circle cx="160" cy="${(28 + t * 40).toFixed(0)}" r="2.4" fill="${ACCENT}"/>`;
+    return s;
+  },
   // Harmonograf — sönümlü Lissajous spirali
   harmonograf() {
     let d = "";
@@ -134,6 +149,9 @@ const PLATES = [
   { fig: "Levha VII", key: "harmonograf", title: "Harmonograf",
     desc: "Sarkaç salınımlarının izi — Lissajous eğrileri ve harmonograf desenleri.",
     href: "https://hakanatas.github.io/harmonograf/" },
+  { fig: "Levha VIII", key: "devre", title: "Devre Kurucu",
+    desc: "Ortaokul için: sürükle-bırak elektrik devresi, gerçek fizikle yanan ampuller.",
+    href: "https://hakanatas.github.io/devre-kurucu/" },
 ];
 
 const grid = document.getElementById("grid");
