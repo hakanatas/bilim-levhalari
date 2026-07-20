@@ -12,3 +12,4 @@ her levha bir FIG. kartı. dilum.dev'in bilimsel gravür estetiğinden ilham al�
 - **IV** — [Yörünge Kurucu](https://hakanatas.github.io/yorunge-kurucu/)
 - **V** — [Galton Tahtası](https://hakanatas.github.io/galton-tahtasi/)
 - **VI** — [Dalga Laboratuvarı](https://hakanatas.github.io/dalga-laboratuvari/)
+- **VII** — [Harmonograf](https://hakanatas.github.io/harmonograf/)

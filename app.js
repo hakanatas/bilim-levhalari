@@ -76,6 +76,19 @@ const ICONS = {
     s += P(d, ACCENT, 2);
     return s;
   },
+  // Harmonograf — sönümlü Lissajous spirali
+  harmonograf() {
+    let d = "";
+    const N = 420;
+    for (let i = 0; i <= N; i++) {
+      const t = i / N * Math.PI * 2 * 6;
+      const env = Math.exp(-0.055 * t);
+      const x = 100 + 48 * Math.sin(2.01 * t + Math.PI / 3) * env;
+      const y = 48 + 42 * Math.sin(3 * t) * env;
+      d += (i ? "L" : "M") + x.toFixed(1) + "," + y.toFixed(1);
+    }
+    return P(d, ACCENT, 1.2);
+  },
   // Dalga — iki sinüs + toplam
   wave() {
     const sine = (amp, freq, yc, col, w, ph = 0) => {
@@ -118,6 +131,9 @@ const PLATES = [
   { fig: "Levha VI", key: "wave", title: "Dalga Laboratuvarı",
     desc: "Dalga girişimi ve vuru — hem gözle gör hem sesi aç, kulağınla duy.",
     href: "https://hakanatas.github.io/dalga-laboratuvari/" },
+  { fig: "Levha VII", key: "harmonograf", title: "Harmonograf",
+    desc: "Sarkaç salınımlarının izi — Lissajous eğrileri ve harmonograf desenleri.",
+    href: "https://hakanatas.github.io/harmonograf/" },
 ];
 
 const grid = document.getElementById("grid");
@@ -140,3 +156,100 @@ document.addEventListener("click", (ev) => {
   document.body.style.transform = "translateY(-10px)";
   setTimeout(() => (location.href = a.href), 240);
 });
+
+/* =========================================================
+   DİNAMİK ARKA PLAN — soluk, yavaş animasyonlu bilim motifleri
+   (her levhaya bir gönderme; dikkat dağıtmadan hareket eder)
+   ========================================================= */
+(() => {
+  const cv = document.getElementById("bg");
+  if (!cv) return;
+  const g = cv.getContext("2d");
+  let W = 0, Hh = 0, DPR = 1, S = 1;
+  const INKA = (a) => `rgba(34,51,79,${a})`;
+  const ACCA = (a) => `rgba(181,67,44,${a})`;
+  const TAU = Math.PI * 2;
+
+  function resize() {
+    DPR = window.devicePixelRatio || 1;
+    W = window.innerWidth; Hh = window.innerHeight;
+    cv.width = W * DPR; cv.height = Hh * DPR;
+    S = Math.min(W, Hh);
+  }
+  window.addEventListener("resize", resize);
+
+  const stroke = (a, col, w) => { g.strokeStyle = col; g.lineWidth = w; g.stroke(); };
+
+  // 1) dönen atom (Levha I/II göndermesi)
+  function atom(cx, cy, r, t) {
+    for (let i = 0; i < 3; i++) {
+      g.save(); g.translate(cx, cy); g.rotate(i * Math.PI / 3 + t * 0.15);
+      g.beginPath(); g.ellipse(0, 0, r, r * 0.4, 0, 0, TAU); stroke(1, INKA(0.05), 1.2);
+      const a = t * 0.9 + i * 2.1;
+      g.beginPath(); g.arc(r * Math.cos(a), r * 0.4 * Math.sin(a), 3, 0, TAU);
+      g.fillStyle = i === 1 ? ACCA(0.10) : INKA(0.09); g.fill();
+      g.restore();
+    }
+    g.beginPath(); g.arc(cx, cy, 4, 0, TAU); g.fillStyle = ACCA(0.10); g.fill();
+  }
+
+  // 2) akan Lissajous (Levha VII)
+  function lissajous(cx, cy, r, t) {
+    g.beginPath();
+    for (let i = 0; i <= 240; i++) {
+      const u = i / 240 * TAU;
+      const x = cx + r * Math.sin(3 * u + t * 0.4), y = cy + r * 0.82 * Math.sin(2 * u);
+      i ? g.lineTo(x, y) : g.moveTo(x, y);
+    }
+    g.closePath(); stroke(1, ACCA(0.06), 1.2);
+  }
+
+  // 3) akan dalgalar (Levha VI)
+  function waves(cx, cy, w, t) {
+    for (let k = 0; k < 2; k++) {
+      g.beginPath();
+      for (let i = 0; i <= 80; i++) {
+        const x = cx - w / 2 + (i / 80) * w;
+        const y = cy + k * 20 + 12 * Math.sin(i / 80 * (3 + k) * TAU - t + k);
+        i ? g.lineTo(x, y) : g.moveTo(x, y);
+      }
+      stroke(1, k ? INKA(0.055) : ACCA(0.05), 1.2);
+    }
+  }
+
+  // 4) yörünge (Levha IV)
+  function orbit(cx, cy, r, t) {
+    g.save(); g.translate(cx, cy); g.rotate(-0.3);
+    g.beginPath(); g.ellipse(0, 0, r, r * 0.5, 0, 0, TAU); stroke(1, INKA(0.05), 1.2);
+    const a = t * 0.6;
+    g.beginPath(); g.arc(r * Math.cos(a), r * 0.5 * Math.sin(a), 3.5, 0, TAU); g.fillStyle = INKA(0.10); g.fill();
+    g.beginPath(); g.arc(0, 0, 4, 0, TAU); g.fillStyle = ACCA(0.10); g.fill();
+    g.restore();
+  }
+
+  // 5) çan eğrisi (Levha V)
+  function bell(cx, cy, w, t) {
+    g.beginPath();
+    for (let i = 0; i <= 60; i++) {
+      const u = (i / 60 - 0.5) * 5.2, x = cx - w / 2 + (i / 60) * w;
+      const y = cy - Math.exp(-u * u) * 46 * (0.9 + 0.1 * Math.sin(t));
+      i ? g.lineTo(x, y) : g.moveTo(x, y);
+    }
+    stroke(1, ACCA(0.06), 1.4);
+  }
+
+  let t = 0;
+  function frame() {
+    t += 0.01;
+    g.setTransform(DPR, 0, 0, DPR, 0, 0);
+    g.clearRect(0, 0, W, Hh);
+    atom(W * 0.13, Hh * 0.22, S * 0.11, t);
+    lissajous(W * 0.87, Hh * 0.2, S * 0.1, t);
+    orbit(W * 0.84, Hh * 0.78, S * 0.12, t);
+    bell(W * 0.16, Hh * 0.76, S * 0.22, t);
+    waves(W * 0.5, Hh * 0.9, S * 0.42, t);
+    requestAnimationFrame(frame);
+  }
+  resize();
+  frame();
+})();

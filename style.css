@@ -23,6 +23,9 @@ body {
 }
 @keyframes fade { from { opacity: 0; } }
 
+/* dinamik arka plan (soluk animasyonlu bilim motifleri) */
+.bg-canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
+
 /* köşe artıları (dilum.dev) */
 .marks .m { position: fixed; color: var(--line-strong); font-size: 1.4rem; z-index: 0; }
 .marks .tl { top: 1.2rem; left: 1.4rem; } .marks .tr { top: 1.2rem; right: 1.4rem; }
