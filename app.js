@@ -91,6 +91,28 @@ const ICONS = {
     for (const t of [0.3, 0.7]) s += `<circle cx="160" cy="${(28 + t * 40).toFixed(0)}" r="2.4" fill="${ACCENT}"/>`;
     return s;
   },
+  // Ay Evreleri — beş evre dizisi (hilal→dolunay)
+  ay() {
+    const R = 15, cx = [40, 70, 100, 130, 160], cy = 48;
+    // illum: 0.15, 0.5, 1, 0.5(waning), 0.85(waning)
+    const specs = [[0.14, true], [0.5, true], [1, true], [0.5, false], [0.86, false]];
+    let s = "";
+    specs.forEach(([il, wax], k) => {
+      const x = cx[k];
+      s += `<circle cx="${x}" cy="${cy}" r="${R}" fill="none" stroke="${INK}" stroke-width="1.3"/>`;
+      // aydınlık bölge (terminatör tarama)
+      const cosT = 1 - 2 * il, rx = Math.abs(cosT) * R;
+      let d = "";
+      for (let yy = -R; yy <= R; yy += 2) {
+        const w = Math.sqrt(Math.max(0, R * R - yy * yy));
+        const xt = w * cosT;
+        const [a, b] = wax ? [xt, w] : [-w, -xt];
+        if (b > a) d += `M${(x + a).toFixed(1)},${(cy + yy).toFixed(1)}L${(x + b).toFixed(1)},${(cy + yy).toFixed(1)}`;
+      }
+      s += `<path d="${d}" stroke="${ACCENT}" stroke-width="1.6" fill="none"/>`;
+    });
+    return s;
+  },
   // Harmonograf — sönümlü Lissajous spirali
   harmonograf() {
     let d = "";
@@ -152,6 +174,9 @@ const PLATES = [
   { fig: "Levha VIII", key: "devre", title: "Devre Kurucu",
     desc: "Ortaokul için: sürükle-bırak elektrik devresi, gerçek fizikle yanan ampuller.",
     href: "https://hakanatas.github.io/devre-kurucu/" },
+  { fig: "Levha IX", key: "ay", title: "Ay Evreleri",
+    desc: "Ortaokul için: Güneş–Dünya–Ay'ı döndür; evreleri kuşbakışı ve gökyüzü görünümüyle gör.",
+    href: "https://hakanatas.github.io/ay-evreleri/" },
 ];
 
 const grid = document.getElementById("grid");
