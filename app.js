@@ -126,6 +126,33 @@ const ICONS = {
     }
     return P(d, ACCENT, 1.2);
   },
+  // Sayılar Tablosu — sayı ızgarası, asallar vurgulu
+  sayilar() {
+    let s = "";
+    const bw = 17, x0 = 33, y0 = 21;
+    const primes = new Set([2, 3, 5, 7, 11, 13, 17, 19, 23]);
+    for (let i = 0; i < 24; i++) {
+      const n = i + 1, gx = i % 8, gy = Math.floor(i / 8);
+      const x = x0 + gx * bw, y = y0 + gy * bw;
+      const hot = primes.has(n);
+      s += `<rect x="${x}" y="${y}" width="${bw - 3}" height="${bw - 3}" rx="3" fill="${hot ? ACCENT + "22" : "none"}" stroke="${hot ? ACCENT : INK}" stroke-width="${hot ? 1.6 : 1.1}"/>`;
+    }
+    return s;
+  },
+  // Kesir Tablosu — 3/4 pasta + çubuk model
+  kesir() {
+    const cx = 58, cy = 48, R = 30;
+    let s = `<path d="M${cx},${cy} L${cx},${cy - R} A${R},${R} 0 1 1 ${cx - R},${cy} Z" fill="${ACCENT}22" stroke="${ACCENT}" stroke-width="1.8"/>`;
+    s += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${INK}" stroke-width="1.3"/>`;
+    s += P(`M${cx},${cy - R} L${cx},${cy + R}`, INK, 1.1) + P(`M${cx - R},${cy} L${cx + R},${cy}`, INK, 1.1);
+    const bx = 106, by = 30, bwid = 68, bhei = 18;
+    for (let i = 0; i < 4; i++) {
+      const w = bwid / 4;
+      s += `<rect x="${bx + i * w}" y="${by}" width="${w}" height="${bhei}" fill="${i < 3 ? ACCENT + "33" : "none"}" stroke="${INK}" stroke-width="1.2"/>`;
+    }
+    s += `<text x="${bx + bwid / 2}" y="${by + 42}" text-anchor="middle" font-family="Merriweather,serif" font-size="16" font-weight="700" fill="${INK}">3/4</text>`;
+    return s;
+  },
   // Dalga — iki sinüs + toplam
   wave() {
     const sine = (amp, freq, yc, col, w, ph = 0) => {
@@ -177,6 +204,12 @@ const PLATES = [
   { fig: "Levha IX", key: "ay", title: "Ay Evreleri",
     desc: "Ortaokul için: Güneş–Dünya–Ay'ı döndür; evreleri kuşbakışı ve gökyüzü görünümüyle gör.",
     href: "https://hakanatas.github.io/ay-evreleri/" },
+  { fig: "Levha X", key: "sayilar", title: "Sayılar Tablosu",
+    desc: "Ortaokul için: 1–400 arası sayıların canlı tablosu; Eratosthenes Kalburu, bölünebilme, EBOB/EKOK.",
+    href: "https://hakanatas.github.io/sayilar-tablosu/" },
+  { fig: "Levha XI", key: "kesir", title: "Kesir Tablosu",
+    desc: "5. sınıf için: kesirlerin farklı gösterimleri — pasta, çubuk, sayı doğrusu, ondalık; denk kesirler ve quiz.",
+    href: "https://hakanatas.github.io/kesir-tablosu/" },
 ];
 
 const grid = document.getElementById("grid");
